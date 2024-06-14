@@ -1,9 +1,14 @@
 if(ESP_PLATFORM)
 
-file(GLOB SOURCES *.c)
-set(LVGL_INCLUDE_DIRS . lvgl_tft)
-list(APPEND SOURCES "lvgl_tft/disp_driver.c")
-list(APPEND SOURCES "lvgl_tft/esp_lcd_backlight.c")
+if(CONFIG_RGB_MANAGER_ENABLED)
+    set(LVGL_INCLUDE_DIRS lvgl_rgb)
+    file(GLOB SOURCES lvgl_rgb/*.c)
+else()
+    file(GLOB SOURCES *.c)
+    set(LVGL_INCLUDE_DIRS . lvgl_tft)
+    list(APPEND SOURCES "lvgl_tft/disp_driver.c")
+    list(APPEND SOURCES "lvgl_tft/esp_lcd_backlight.c")
+endif()
 
 # Include only the source file of the selected
 # display controller.
@@ -44,6 +49,8 @@ elseif(CONFIG_LV_TFT_DISPLAY_CONTROLLER_ILI9163C)
     list(APPEND SOURCES "lvgl_tft/ili9163c.c")
 elseif(CONFIG_LV_TFT_DISPLAY_CONTROLLER_PCD8544)
     list(APPEND SOURCES "lvgl_tft/pcd8544.c")
+elseif(CONFIG_RGB_MANAGER_ENABLED)
+    list(APPEND SOURCES "lvgl_rgb/rgb_manager.c")
 else()
     message(WARNING "LVGL ESP32 drivers: Display controller not defined.")
 endif()
@@ -86,7 +93,7 @@ endif()
 
 idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS ${LVGL_INCLUDE_DIRS}
-                       REQUIRES lvgl)
+                       REQUIRES lvg rgb_set)
 
 target_compile_definitions(${COMPONENT_LIB} PUBLIC "-DLV_LVGL_H_INCLUDE_SIMPLE")
 

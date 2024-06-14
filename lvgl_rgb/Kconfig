@@ -1,0 +1,4 @@
+menu "RGB Port Config"
+	config RGB_MANAGER_ENABLED
+		bool "Enable RGB port."
+endmenu
