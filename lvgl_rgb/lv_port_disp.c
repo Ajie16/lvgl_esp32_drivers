@@ -36,7 +36,7 @@
  **********************/
 static void disp_init(void);
 
-static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map);
+static void disp_flush(lv_display_t * disp, const lv_area_t * area, lv_color16_t * px_map);
 
 /**********************
  *  STATIC VARIABLES
@@ -114,18 +114,17 @@ void disp_disable_update(void)
  *`px_map` contains the rendered image as raw pixel map and it should be copied to `area` on the display.
  *You can use DMA or any hardware acceleration to do this operation in the background but
  *'lv_display_flush_ready()' has to be called when it's finished.*/
-static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, uint8_t * px_map)
+static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, lv_color16_t * px_map)
 {
     if(disp_flush_enabled) {
         /*The most simple case (but also the slowest) to put all pixels to the screen one-by-one*/
-
         int32_t x;
         int32_t y;
         for(y = area->y1; y <= area->y2; y++) {
             for(x = area->x1; x <= area->x2; x++) {
                 /*Put a pixel to the display. For example:*/
                 /*put_px(x, y, *px_map)*/
-                HUB75_DrawPixel(x, y, *px_map);
+                HUB75_DrawPixel(x, y, (px_map->red & 0x4) | (px_map->green & 0x2) | (px_map->blue & 0x1));
                 px_map++;
             }
         }
