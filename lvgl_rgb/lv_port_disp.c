@@ -171,7 +171,7 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
             for(x = area->x1; x <= area->x2; x++) {
                 /*Put a pixel to the display. For example:*/
                 /*put_px(x, y, *color_p)*/
-                HUB75_DrawPixel(x, y, (color_p->ch.red & 0x1) | ((color_p->ch.green & 0x1) << 0x1) | ((color_p->ch.blue & 0x1) << 0x2));
+                HUB75_DrawPixel(x, y, (color_p->ch.red & 0x2) >> 1 | (color_p->ch.green & 0x2) | ((color_p->ch.blue & 0x2) << 0x1));
                 color_p++;
             }
         }
